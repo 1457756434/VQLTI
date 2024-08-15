@@ -1,0 +1,138 @@
+gridsat_crop_fengwu_pre_vae: &gridsat_crop_fengwu_pre_vae
+  type: 'gridsat_crop_fengwu_pre_vae'
+  data_dir: 'cephnew:s3://tropical_cyclone_data/GRIDSAT/npy_fengwu_era5'
+  save_meanstd_dir: 'dataset/npy_fengwu_era5_meanstd_140'
+  IBTrACS_url: "dataset/ibtracs.ALL.list.v04r00.csv"
+  output_step_length: &output_step_length 1
+  resolution: 0.25
+  radius: 5
+
+  ERA5_image_size: &ERA5_image_size 40
+  is_fengwu_pre: False
+  is_map_inp_intensity: False
+  is_save_npy: False
+  is_load_npy: True
+  inp_type: &inp_type ["ERA5", "Seq"]
+  set_ERA5_zero: False
+  set_Seq_zero: False
+  train_begin_year: 2017
+  train_end_year: 2017
+  valid_begin_year: 2019
+  valid_end_year: 2020
+  test_begin_year: 2018
+  test_end_year: 2018
+  is_rand_rotation: False
+  is_data_augmentation: False
+  is_diff: &is_diff False
+  is_use_lifetime_num: &is_use_lifetime_num False
+
+  is_use_fengwu: False
+
+
+  vnames:
+    constants: []
+    single_level_vnames: ['u10', 'v10', 't2m', 'msl']
+    multi_level_vnames: ['z', 'q', 'u', 'v', 't']
+    hight_level_list: [50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 850, 925, 1000]
+    #"USA_WIND", "USA_PRES"
+    label_vnames: ["USA_WIND", "USA_PRES"]
+  
+    is_pre_latlon: False
+    train_label_Basin: ["EP", "NA", "NI", "SA", "SI", "SP", "WP"]
+    test_label_Basin: ["EP", "NA", "NI", "SA", "SI", "SP", "WP"]
+
+  lds_config:
+    use_lds: False
+    reweight: sqrt_inv
+    lds: False
+    lds_kernel: gaussian
+    lds_ks: 5
+    lds_sigma: 2
+    min_label: [0, 850]
+    max_label: [200, 1030]
+
+
+
+model:
+  type: "Iter_model"
+  params:
+    Model_choose: &Model_choose ["FPN", "CCAtt", "FengWu_AR"]
+    sub_model:
+      VQ_TC_ERA5:
+        ERA5_image_size: 40
+        ERA5_channels: 69
+        dim: 128
+        in_channel: 2
+        num_embeddings: 1024
+        embedding_dim: 128
+        beta: 0.25
+        n_head: 4
+        is_choose_channel: False
+        choose_channel_hid_dim: 128
+        double_z: False
+        Cross_att_qkv_mode: "Q_TC_info"
+        encoder_mode: 'FPN'
+        decoder_mode: "Cross_atten"
+        dropout: 0.0
+    use_ceph: True
+    save_best: &loss_type "MAE"
+    metrics_list: ["MAE", "MSE"]
+
+    optimizer:
+      VQ_TC_ERA5:
+        type: "Adam"
+        params:
+          lr: 0.0001
+          betas: [0.9, 0.999]
+          eps: 0.000000001
+    
+ 
+    
+    lr_scheduler:
+      VQ_TC_ERA5:
+        by_step: True
+        sched: linear
+        epochs: &maxepoch 50
+        min_lr: 0.0000001
+        warmup_lr: 0.0002
+        warmup_epochs: 0
+        lr_noise: 
+        cooldown_epochs: 0
+
+    extra_params:
+      two_step_training: False
+      #diff2_mae_loss   MAELoss
+      loss_type: "MAELoss"
+      L1_re_rate: 0.00001
+      enabled_amp: False
+    inp_type: *inp_type
+    is_add_RI_Loss: False
+    RI_threshold: 30.0
+    is_diff: *is_diff
+    ema_config:
+      is_ema: True
+      ema_decay: 0.999
+      ema_add_to_train: False
+    output_step_length: *output_step_length
+dataset:
+  train:
+    <<: *gridsat_crop_fengwu_pre_vae
+    
+
+  test:
+    <<: *gridsat_crop_fengwu_pre_vae
+    
+
+
+
+dataloader:
+  num_workers: 4
+  pin_memory: True
+  prefetch_factor: 2
+  persistent_workers: True
+
+trainer:
+  batch_size: 16
+  test_batch_size: 16
+  max_epoch: *maxepoch
+

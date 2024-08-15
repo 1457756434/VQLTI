@@ -1,0 +1,11 @@
+
+data_dir: "cephnew:s3://tropical_cyclone_data/Fengwu_pretrain_v2_pre_crop"
+base_save_dir: "cephnew:s3://tropical_cyclone_data/Fengwu_pretrain_v2_pre_crop_PI"
+IBTrACS_url: "dataset/ibtracs.ALL.list.v04r00.csv"
+Process_nums: 10
+begin_year: 2021
+end_year: 2022
+radius: 10
+time_interval: 6
+is_FengWu_Pre: True
+forecast_time: 20
