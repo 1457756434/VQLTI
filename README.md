@@ -40,3 +40,13 @@ bash inference_bash.sh
 ```
 Wang, X., Liu, L., Chen, K., Han, T., Li, B., & Bai, L. (2025). VQLTI: Long-Term Tropical Cyclone Intensity Forecasting with Physical Constraints. Proceedings of the AAAI Conference on Artificial Intelligence, 39(27), 28476-28484. https://doi.org/10.1609/aaai.v39i27.35070
 ```
+```
+@inproceedings{wang2025global,
+  title={Global tropical cyclone intensity forecasting with multi-modal multi-scale causal autoregressive model},
+  author={Wang, Xinyu and Chen, Kang and Liu, Lei and Han, Tao and Li, Bin and Bai, Lei},
+  booktitle={ICASSP 2025-2025 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)},
+  pages={1--5},
+  year={2025},
+  organization={IEEE}
+}
+```
