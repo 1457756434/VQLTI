@@ -35,3 +35,8 @@ bash inference_bash.sh
 ![](pic/singel_case_2022207N11262_MSLP.png)
 
 ![](pic/singel_case_2022207N11262_MSW.png)
+
+## Citation
+```
+Wang, X., Liu, L., Chen, K., Han, T., Li, B., & Bai, L. (2025). VQLTI: Long-Term Tropical Cyclone Intensity Forecasting with Physical Constraints. Proceedings of the AAAI Conference on Artificial Intelligence, 39(27), 28476-28484. https://doi.org/10.1609/aaai.v39i27.35070
+```
